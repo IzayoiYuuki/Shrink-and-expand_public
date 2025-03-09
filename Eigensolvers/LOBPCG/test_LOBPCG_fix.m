@@ -36,11 +36,11 @@ warmupiter = 5;
 SEconfig.warmuptol = 1e-4;
 
 % Warm up
-WarmUp(FileNames(3));
+WarmUp(FileNames(2));
 
 dlmwrite(DataOut, date, '-append', 'delimiter', '', 'precision', 4);
 
-for fileNo = 1 : 12
+for fileNo = 1 : 3
 
     disp(MatNames(fileNo));
     dlmwrite(DataOut, fileNo, '-append', 'delimiter', '', 'precision', 4);
@@ -89,8 +89,7 @@ for fileNo = 1 : 12
     plot(find(SEconfig.shrinklist < 0), res(SEconfig.shrinklist < 0), "square", 'linewidth', 3, 'Color', 'b');
     plot(find(SEconfig.shrinklist > 0), res(SEconfig.shrinklist > 0), "square", 'linewidth', 3, 'Color', 'r');
 
-    hold on;
-
+    title(MatNames(fileNo));
     legend("HL-LOBPCG", "HL-LOBPCG with shrink", "shrink point", "enlarge point");
     xlabel("Iterations");
     ylabel("Res");

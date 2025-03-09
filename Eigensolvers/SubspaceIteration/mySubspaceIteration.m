@@ -1,5 +1,4 @@
 function [V, D, iter, res, shrinklist] = mySubspaceIteration(A, X, nev, tol, Maxiter, SEconfig)
-% 这是经典的子空间迭代
 
 normA = normest(A, 1e-3);
 shrinklist = zeros(Maxiter, 1);

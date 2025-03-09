@@ -1,5 +1,7 @@
 function [] = WarmUp(FileName)
 
+disp("Now warming up...");
+
 Maxiter = 3500;
 tol = 1e-10;
 
@@ -33,9 +35,11 @@ SEconfig.warmupiter = Maxiter;
 mySteepestDescent(A, X, Myprec, nev, tol, Maxiter, SEconfig);
 
 
-% LOBPCG with shrink
+% SD with shrink
 SEconfig.warmupiter = min(max(round(n/500),SEconfig.shrinksteps), warmupiter);
 
 mySteepestDescent(A, X, Myprec, nev, tol, Maxiter, SEconfig);
 
 hold off;
+
+disp("Warming up finished.");

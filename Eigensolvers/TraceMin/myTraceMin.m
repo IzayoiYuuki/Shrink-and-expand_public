@@ -24,7 +24,6 @@ if strcmp(Sconfig.method, 'direct_lu') == 1
         = prepLU(A);
 end
 
-innerclock = tic;
 for iter = 1 : Maxiter
     
     % Compute residual
@@ -41,7 +40,7 @@ for iter = 1 : Maxiter
     Xr = X(:, idx);
     Dr = D(idx, idx);
     res(iter) = tmp(end);
-    if res(iter) < tol || toc(innerclock) > 3600
+    if res(iter) < tol
         break;
     end
 

@@ -1,8 +1,12 @@
 clear;
 hold off;
 
-WarmUp();
+% Add root path
+ScriptPath = fileparts(mfilename("fullpath"));
+RootPath = fullfile(ScriptPath, "../../");
+addpath(genpath(RootPath));
 
+% Add matrix path & save path
 MatNames = ["bcsstm21";
             "rail_5177";
             "Muu";
@@ -15,34 +19,36 @@ MatNames = ["bcsstm21";
             "Andrews";
             "Ga3As3H12";
             "Ga10As10H30"];
+FileNames = fullfile(RootPath, "Matrices", MatNames + ".mat");
+FigureOut = fullfile(RootPath, "Figure", MatNames + "_TM_slopek.pdf");
+DataOut = fullfile(RootPath, "Figure", "Data_TM_slopek.txt");
 
-FileNames = './Matrices/' + MatNames + '.mat';
-
-OutNames = './Figure/' + MatNames + '_TM_fix.pdf';
-
+% Problem setting
 Nevs = [100; 100; 100; 100; 104; 156; 199; 384; 481; 500; 500; 500];
 Maxiter = 500;
 tol = 1e-10;
 
-Sconfig = struct();
+% solver setting
 Sconfig.method = 'pcg';
 Sconfig.res = 1e-5;
 Sconfig.iter = 5;
 
-SEconfig = struct();
-SEconfig.rule = 'fix';
+SEconfig.rule = 'slopek';
+SEconfig.slopestep = 10;
+SEconfig.enlargetol = 1.1;
 SEconfig.enlargesteps = 2;
-SEconfig.shrinksteps = 10;
 warmupiter = 5;
 SEconfig.warmuptol = 1e-4;
 
-dlmwrite('./Figure/Data_TM_fix.txt', date, '-append', 'delimiter', '', 'precision', 4);
+% Warm up
+WarmUp(FileNames(2));
 
-for fileNo = 1 : 8
+dlmwrite(DataOut, date, '-append', 'delimiter', '', 'precision', 4);
 
-    % load matrix
+for fileNo = 1 : 3
+
     disp(MatNames(fileNo));
-    dlmwrite('./Figure/Data_TM_fix.txt', fileNo, '-append', 'delimiter', '', 'precision', 4);
+    dlmwrite(DataOut, fileNo, '-append', 'delimiter', '', 'precision', 4);
 
     [A, B] = LoadEigProb(FileNames(fileNo));
     
@@ -60,22 +66,22 @@ for fileNo = 1 : 8
     [n, ~] = size(A);
     X = randn(n, nex);
     
-    % Without shrink
+    % TraceMIN without shrink
     SEconfig.warmupiter = Maxiter;
-    ftime = tic;
+    tic;
     [~, ~, iter, res] = myTraceMin(A, B, X, nev, tol, Maxiter, Sconfig, SEconfig);
-    timeL(fileNo, 1) = toc(ftime);
+    timeL(fileNo, 1) = toc;
     iterL(fileNo, 1) = iter;
     resL{fileNo}(1, 1:length(res)) = res;
     
-    semilogy((1:iter), res, '-o', 'linewidth', 2);
+    semilogy((1:iter), res, '-*', 'linewidth', 2);
     hold on;
     
-    % With shrink
+    % TraceMIN with shrink
     SEconfig.warmupiter = warmupiter;
-    ftime = tic;
+    tic;
     [~, ~, iter, res, SEconfig.shrinklist] = myTraceMin(A, B, X, nev, tol, Maxiter, Sconfig, SEconfig);
-    timeL(fileNo, 2) = toc(ftime);
+    timeL(fileNo, 2) = toc;
     iterL(fileNo, 2) = iter;
     resL{fileNo}(2, 1:length(res)) = res;
     shrinklistL(fileNo, 1:length(SEconfig.shrinklist)) = SEconfig.shrinklist;
@@ -92,14 +98,14 @@ for fileNo = 1 : 8
     set(gca,'FontSize',16);
     
     % save figure
-    exportgraphics(gca, OutNames(fileNo));
+    exportgraphics(gca, FigureOut(fileNo));
     hold off;
-
+    
     % save data
-    dlmwrite('./Figure/Data_TM_fix.txt', timeL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite('./Figure/Data_TM_fix.txt', iterL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite('./Figure/Data_TM_fix.txt', resL{fileNo}(1, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite('./Figure/Data_TM_fix.txt', resL{fileNo}(2, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite('./Figure/Data_TM_fix.txt', shrinklistL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
-
+    dlmwrite(DataOut, timeL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, iterL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, resL{fileNo}(1, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, resL{fileNo}(2, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, shrinklistL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
+    
 end
