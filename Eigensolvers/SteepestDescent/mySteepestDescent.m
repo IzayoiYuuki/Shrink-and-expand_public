@@ -4,9 +4,9 @@ function [X, Theta, iter, res, shrinklist] = mySteepestDescent(A, X, precond, ne
 % for each iteration, finding approximate eigenvectors from [X, R]
 % SEconfig: setting of shrink-and-expand technique:
 %           SEconfig.rule:         SE strategy
-%           SEconfig.enlargesteps: step of expand --> shrink
+%           SEconfig.expandsteps: step of expand --> shrink
 %           SEconfig.shrinksteps:  step of shrink --> expand (if fix)
-%           SEconfig.enlargetol:   tolerance of employing expand (if slope or slopek)
+%           SEconfig.expandtol:   tolerance of employing expand (if slope or slopek)
 %           SEconfig.slopestep:    number of iteration for taking average (if slopek)
 %           SEconfig.warmupiter:   minimum iteration before employing SE
 %           SEconfig.warmuptol:    maximum residual before employing SE
@@ -46,7 +46,8 @@ for iter = 1 : maxiter
 
     % sucessful exit
     if res(iter) <= tol
-       break;
+        X = X(:, 1:nev); Theta = Theta(1:nev, 1:nev);
+        break;
     end
 
     % To find the steepest decreacion after last shrink
@@ -65,11 +66,11 @@ for iter = 1 : maxiter
     end
 
 
-    % enlarge the subsapce
-    if ifenlarge()
+    % expand the subsapce
+    if ifexpand()
         % save the shrink log
         shrinklist(iter) = +1;
-        % mark that enlarge has been done
+        % mark that expand has been done
         nowshrink = 0;
         [~, Ln] = size(Xlog);
         nex = nex + Ln;
@@ -105,15 +106,15 @@ for iter = 1 : maxiter
     
 end
 
-function [ifelg] = ifenlarge()
+function [ifelg] = ifexpand()
     ifelg = 0;
     if strcmp(SEconfig.rule, 'slope')
         ifelg = nowshrink > 0 && (log10(res(nowshrink)) - log10(res(nowshrink + 1)))*(iter - nowshrink)/...
-                (log10(res(nowshrink)) - log10(res(iter))) > SEconfig.enlargetol;
+                (log10(res(nowshrink)) - log10(res(iter))) > SEconfig.expandtol;
     elseif strcmp(SEconfig.rule, 'slopek')
         ifelg = nowshrink > 0 && iter - nowshrink >= SEconfig.slopestep...
                 && (log10(res(nowshrink)) - log10(res(nowshrink + SEconfig.slopestep)))*(iter - nowshrink)/...
-                ((log10(res(nowshrink)) - log10(res(iter)))*SEconfig.slopestep) > SEconfig.enlargetol;
+                ((log10(res(nowshrink)) - log10(res(iter)))*SEconfig.slopestep) > SEconfig.expandtol;
     elseif strcmp(SEconfig.rule, 'fix')
         ifelg = nowshrink > 0 && iter - SEconfig.shrinksteps > 0 && shrinklist(iter - SEconfig.shrinksteps) < 0;
     end
@@ -125,7 +126,7 @@ function [ifshr] = ifshrink()
         endwarmup = 1;
     end
     if strcmp(SEconfig.rule, 'fix') || strcmp(SEconfig.rule, 'slope') || strcmp(SEconfig.rule, 'slopek')
-        ifshr = (endwarmup == 1) && ( ~any(shrinklist) || shrinklist(iter - SEconfig.enlargesteps) > 0);
+        ifshr = (endwarmup == 1) && ( ~any(shrinklist) || shrinklist(iter - SEconfig.expandsteps) > 0);
     end
 end
 

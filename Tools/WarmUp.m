@@ -6,7 +6,7 @@ Maxiter = 3500;
 tol = 1e-10;
 
 SEconfig.rule = 'fix';
-SEconfig.enlargesteps = 2;
+SEconfig.expandsteps = 2;
 SEconfig.shrinksteps = 10;
 warmupiter = 20;
 SEconfig.warmuptol = 1e-4;

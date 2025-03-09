@@ -31,8 +31,8 @@ tol = 1e-10;
 % solver setting
 SEconfig.rule = 'slopek';
 SEconfig.slopestep = 10;
-SEconfig.enlargetol = 1.1;
-SEconfig.enlargesteps = 2;
+SEconfig.expandtol = 1.1;
+SEconfig.expandsteps = 2;
 warmupiter = 5;
 SEconfig.warmuptol = 1e-4;
 
@@ -91,7 +91,7 @@ for fileNo = 1 : 3
     plot(find(SEconfig.shrinklist > 0), res(SEconfig.shrinklist > 0), "square", 'linewidth', 3, 'Color', 'r');
 
     title(MatNames(fileNo));
-    legend("HL-LOBPCG", "HL-LOBPCG with shrink", "shrink point", "enlarge point");
+    legend("HL-LOBPCG", "HL-LOBPCG with shrink", "shrink point", "expand point");
     xlabel("Iterations");
     ylabel("Res");
     set(gca,'FontSize',16);

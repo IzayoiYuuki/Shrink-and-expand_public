@@ -35,8 +35,8 @@ Sconfig.iter = 5;
 
 SEconfig = struct();
 SEconfig.rule = 'slope';
-SEconfig.enlargetol = 1.1;
-SEconfig.enlargesteps = 2;
+SEconfig.expandtol = 1.1;
+SEconfig.expandsteps = 2;
 warmupiter = 5;
 SEconfig.warmuptol = 1e-4;
 
@@ -92,7 +92,7 @@ for fileNo = 1 : 3
     plot(find(SEconfig.shrinklist > 0), res(SEconfig.shrinklist > 0), "square", 'linewidth', 3, 'Color', 'r');
     
     title(MatNames(fileNo));
-    legend("TraceMin", "TraceMin with shrink", "shrink point", "enlarge point");
+    legend("TraceMin", "TraceMin with shrink", "shrink point", "expand point");
     xlabel("Iterations");
     ylabel("Res");
     set(gca,'FontSize',16);

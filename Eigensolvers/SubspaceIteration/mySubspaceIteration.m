@@ -10,9 +10,9 @@ function [V, D, iter, res, shrinklist] = mySubspaceIteration(A, X, nev, tol, Max
 % Maxiter: max iteration
 % SEconfig: setting of shrink-and-expand technique:
 %           SEconfig.rule:         SE strategy
-%           SEconfig.enlargesteps: step of expand --> shrink
+%           SEconfig.expandsteps: step of expand --> shrink
 %           SEconfig.shrinksteps:  step of shrink --> expand (if fix)
-%           SEconfig.enlargetol:   tolerance of employing expand (if slope or slopek)
+%           SEconfig.expandtol:   tolerance of employing expand (if slope or slopek)
 %           SEconfig.slopestep:    number of iteration for taking average (if slopek)
 %           SEconfig.warmupiter:   minimum iteration before employing SE
 %           SEconfig.warmuptol:    maximum residual before employing SE
@@ -62,7 +62,7 @@ for iter = 1 : Maxiter
         nowshrink = 1;
     end
 
-    if ifenlarge()
+    if ifexpand()
         X = [X, Xlog];
         [X, ~] = qr(X, 0);
         shrinklist(iter + 1) = 1;
@@ -71,14 +71,14 @@ for iter = 1 : Maxiter
 
 end
 
-function [ifelg] = ifenlarge()
+function [ifelg] = ifexpand()
     ifelg = nowshrink > 0 && iter - SEconfig.shrinksteps > 0 && shrinklist(iter - SEconfig.shrinksteps) < 0;
 end
 
 function [ifshr] = ifshrink()
     ifshr = 0;
     ifshr = iter >= SEconfig.warmupiter...
-                && ( ~any(shrinklist) || (iter - SEconfig.shrinksteps > 0 && shrinklist(iter - SEconfig.enlargesteps) > 0));
+                && ( ~any(shrinklist) || (iter - SEconfig.shrinksteps > 0 && shrinklist(iter - SEconfig.expandsteps) > 0));
 end
 
 end
