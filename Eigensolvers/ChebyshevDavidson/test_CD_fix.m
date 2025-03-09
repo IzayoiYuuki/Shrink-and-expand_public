@@ -1,5 +1,4 @@
 clear;
-rng(0);
 hold off;
 
 WarmUp();

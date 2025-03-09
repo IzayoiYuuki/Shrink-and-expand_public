@@ -3,7 +3,7 @@ hold off;
 
 % Add root path
 ScriptPath = fileparts(mfilename("fullpath"));
-RootPath = fullfile(ScriptPath, "../");
+RootPath = fullfile(ScriptPath, "../../");
 addpath(genpath(RootPath));
 
 % Add matrix path & save path
@@ -36,14 +36,14 @@ warmupiter = 5;
 SEconfig.warmuptol = 1e-4;
 
 % Warm up
-WarmUp(FileNames(1));
+WarmUp(FileNames(3));
 
-dlmwrite(DataOut , date, '-append', 'delimiter', '', 'precision', 4);
+dlmwrite(DataOut, date, '-append', 'delimiter', '', 'precision', 4);
 
-for fileNo = 1 : 3
+for fileNo = 1 : 12
 
     disp(MatNames(fileNo));
-    dlmwrite(DataOut , fileNo, '-append', 'delimiter', '', 'precision', 4);
+    dlmwrite(DataOut, fileNo, '-append', 'delimiter', '', 'precision', 4);
 
     [A, B] = LoadEigProb(FileNames(fileNo));
 
@@ -101,10 +101,10 @@ for fileNo = 1 : 3
     hold off;
 
     % save data
-    dlmwrite(DataOut , timeL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite(DataOut , iterL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite(DataOut , resL{fileNo}(1, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite(DataOut , resL{fileNo}(2, :), '-append', 'delimiter', ',', 'precision', 4);
-    dlmwrite(DataOut , shrinklistL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, timeL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, iterL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, resL{fileNo}(1, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, resL{fileNo}(2, :), '-append', 'delimiter', ',', 'precision', 4);
+    dlmwrite(DataOut, shrinklistL(fileNo, :), '-append', 'delimiter', ',', 'precision', 4);
 
 end
