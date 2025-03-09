@@ -5,7 +5,7 @@
 The **shrink-and-expand (SE) technique** is a method designed to accelerate eigensolvers.
 This technique can be widely applied to a broad class of eigensolvers, including well-known algorithms such as **subspace iteration**, the **steepest descent method**, and **LOBPCG**.
 
-This Git project is based on our paper *'On a shrink-and-expand technique for block eigensolvers'* and includes simple implementations of the **shrink-and-expand (SE) technique** in five algorithms: **subspace iteration**, the **steepest descent method**, **LOBPCG**, **trace minimization**, and the **Chebyshev-Davidson method**.
+This Git project is based on our paper *'On a shrink-and-expand technique for block eigensolvers（https://arxiv.org/abs/2409.05572）'* and includes simple implementations of the **shrink-and-expand (SE) technique** in five algorithms: **subspace iteration**, the **steepest descent method**, **LOBPCG**, **trace minimization**, and the **Chebyshev-Davidson method**.
 
 ## How to test
 
