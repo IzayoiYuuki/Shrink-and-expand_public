@@ -1,4 +1,26 @@
 function [Xr, Dr, iter, res, shrinklist] = myTraceMin(A, B, X, nev, tol, Maxiter, Sconfig, SEconfig)
+% a trace minimization algorithm
+% computing smallest eigenpairs by magnitude
+% several linear solvers are provided
+% for reference, read doi: 10.1016/j.camwa.2012.06.011
+%           Parameters:
+% A, B:     eigenvalue problem - Ax = lambda*Bx
+% X:        initial guess
+% nev:      number of eigenvalue to be computed
+% tol:      convergence tolerance of residual norm(Ax-lambda*Bx)/(norm(x)*(norm(A)+abs(lambda)*norm(B)))
+% Maxiter:  max iteration
+% Sconfig:  setting of linear solver:
+%           Sconfig.method: type of linear solver
+%           Sconfig.res:    convergence residual of liner solver
+%           Sconfig.iter:   maximum iteration of liner solver
+% SEconfig: setting of shrink-and-expand technique:
+%           SEconfig.rule:         SE strategy
+%           SEconfig.enlargesteps: step of expand --> shrink
+%           SEconfig.shrinksteps:  step of shrink --> expand (if fix)
+%           SEconfig.enlargetol:   tolerance of employing expand (if slope or slopek)
+%           SEconfig.slopestep:    number of iteration for taking average (if slopek)
+%           SEconfig.warmupiter:   minimum iteration before employing SE
+%           SEconfig.warmuptol:    maximum residual before employing SE
 
 [n, nex] = size(X);
 nowshrink = 0;

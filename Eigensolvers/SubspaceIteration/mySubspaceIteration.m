@@ -1,4 +1,21 @@
 function [V, D, iter, res, shrinklist] = mySubspaceIteration(A, X, nev, tol, Maxiter, SEconfig)
+% a classical subspace iteration algorithm
+% computing largest eigenpairs by magnitude
+% search space is updated by A*X in each iteration
+%           Parameters:
+% A:       eigenvalue problem - Ax = lambda*x
+% X:       initial guess
+% nev:     number of eigenvalue to be computed
+% tol:     convergence tolerance of residual norm(Ax-lambda*Bx)/(norm(x)*(norm(A)+abs(lambda)*norm(B)))
+% Maxiter: max iteration
+% SEconfig: setting of shrink-and-expand technique:
+%           SEconfig.rule:         SE strategy
+%           SEconfig.enlargesteps: step of expand --> shrink
+%           SEconfig.shrinksteps:  step of shrink --> expand (if fix)
+%           SEconfig.enlargetol:   tolerance of employing expand (if slope or slopek)
+%           SEconfig.slopestep:    number of iteration for taking average (if slopek)
+%           SEconfig.warmupiter:   minimum iteration before employing SE
+%           SEconfig.warmuptol:    maximum residual before employing SE
 
 normA = normest(A, 1e-3);
 shrinklist = zeros(Maxiter, 1);

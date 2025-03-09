@@ -1,5 +1,16 @@
 function [X, Theta, iter, res, shrinklist] = mySteepestDescent(A, X, precond, nev, tol, maxiter, SEconfig)
-% A should be symmetric
+% a block steepest descent (SD) algorithm
+% computing smallest eigenpairs by magnitude
+% for each iteration, finding approximate eigenvectors from [X, R]
+% SEconfig: setting of shrink-and-expand technique:
+%           SEconfig.rule:         SE strategy
+%           SEconfig.enlargesteps: step of expand --> shrink
+%           SEconfig.shrinksteps:  step of shrink --> expand (if fix)
+%           SEconfig.enlargetol:   tolerance of employing expand (if slope or slopek)
+%           SEconfig.slopestep:    number of iteration for taking average (if slopek)
+%           SEconfig.warmupiter:   minimum iteration before employing SE
+%           SEconfig.warmuptol:    maximum residual before employing SE
+    
 nex = size(X, 2);
 shrinklist = zeros(maxiter, 1);
 nowshrink = 0;

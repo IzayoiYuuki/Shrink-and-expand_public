@@ -1,4 +1,27 @@
 function [V, D, iter, res, logs] = myChebyshevDavidson(A, X, nev, tol, Maxiter, CDconfig, SEconfig)
+% Block Chebyshev-Davidson algorithm with ONLY outer restarting
+% computing smallest eigenpairs by magnitude
+% for reference, read doi: 10.1016/j.jcp.2010.08.032
+%           Parameters:
+% A:        eigenvalue problem - Ax = lambda*Bx
+% X:        initial guess
+% nev:      number of eigenvalue to be computed
+% tol:      convergence tolerance of residual norm(Ax-lambda*Bx)/(norm(x)*(norm(A)+abs(lambda)*norm(B)))
+% Maxiter:  max iteration
+% CDconfig: specific parameters for Chebyshev-Davidson:
+%           CDconfig.lowb:      lower bound of the interval for Chebyshev approximation
+%           CDconfig.upb:       upper bound of the interval for Chebyshev approximation
+%           CDconfig.polyorder: order of Chebyshev polynomial
+%           CDconfig.submax:    maximum dimension of the search space
+%           CDconfig.newsub:    dimension of the new space after search space (in fact, it should be (nconv + newsub))
+% SEconfig: setting of shrink-and-expand technique:
+%           SEconfig.rule:         SE strategy
+%           SEconfig.enlargesteps: step of expand --> shrink
+%           SEconfig.shrinksteps:  step of shrink --> expand (if fix)
+%           SEconfig.enlargetol:   tolerance of employing expand (if slope or slopek)
+%           SEconfig.slopestep:    number of iteration for taking average (if slopek)
+%           SEconfig.warmupiter:   minimum iteration before employing SE
+%           SEconfig.warmuptol:    maximum residual before employing SE
 
 % problem information
 [n, nex] = size(X);
@@ -95,6 +118,7 @@ for iter = 1 : Maxiter
     [Xtmp, ~] = qr(Xtmp, 0);
     X = [X, Xtmp];
 
+    % % if necessary, full orthogonalization
     % X = [X, Xtmp];
     % [X, ~] = qr(X, 0);
     
